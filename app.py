@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.automap import automap_base
 import datetime
@@ -20,9 +20,13 @@ user = db.Table('User',db.metadata, autoload = True, autoload_with=db.engine)
 
 @app.route('/')
 def index():
-    results = db.session.query(user).all()
-    for r in results:
-        print(r.Name)
+    # results = db.session.query(user).all()
+    # for r in results:
+    #     print(r.Name, r.UserID)
 
-    return ''
+    to_echo = request.args.get("page")
+    # response = "{}".format(to_echo)
+
+    return to_echo
+
 
