@@ -1,32 +1,16 @@
-from flask import Flask, request
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.ext.automap import automap_base
-import datetime
-
+from flask import Flask, render_template
 app = Flask(__name__)
-
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@localhost/testing'
-
-db = SQLAlchemy(app)
-
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(50))
-#     location = db.Column(db.String(50))
-#     date_created = db.Column(db.DateTime, default=datetime.datetime.now())
-
-user = db.Table('User',db.metadata, autoload = True, autoload_with=db.engine)
+import mysql.connector
+mydb=mysql.connector.connect(host="localhost",user="root",passwd="password", database="testing")
+mycursor = mydb.cursor()
 
 @app.route('/')
-def index():
-    # results = db.session.query(user).all()
-    # for r in results:
-    #     print(r.Name, r.UserID)
+@app.route('/home')
+def home_page():
+    return render_template('home.html')
 
-    to_echo = request.args.get("page")
-    # response = "{}".format(to_echo)
-
-    return to_echo
-
-
+@app.route('/market')
+def market_page():
+    mycursor.execute("SELECT * FROM Ads")
+    myresult = mycursor.fetchall()
+    return render_template('market.html', myresult=myresult)
